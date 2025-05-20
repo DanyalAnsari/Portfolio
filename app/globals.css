@@ -18,3 +18,6 @@ body {
 	@apply grid;
 	grid-template-columns: var(--grid-cols-auto);
 }
+
+@custom-variant dark (&:where(.dark, .dark *));
+
