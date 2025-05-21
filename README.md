@@ -28,7 +28,7 @@ A modern and responsive portfolio website built with Next.js, featuring a dark/l
 
 1. **Clone the repository**
 ```bash
-git clone [your-repo-link]
+git clone https://github.com/DanyalAnsari/Portfolio.git
 cd portfolio
 ```
 
