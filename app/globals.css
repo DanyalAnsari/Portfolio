@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body {
-	font-family: Outfit, sans-serif;
+	font-family: "Outfit", sans-serif;
 }
 
 @theme {
@@ -11,7 +11,7 @@ body {
 	--shadow-black: 4px 4px 0 #000;
 	--shadow-white: 4px 4px 0 #fff;
 	--font-outfit: "Outfit", "sans-serif";
-	--font-ovo: "Ovo", "serif";
+	--font-ovo: "Outfit", "serif";
 	--grid-cols-auto: repeat(auto-fit, minmax(200px, 1fr));
 }
 .grid-cols-auto {

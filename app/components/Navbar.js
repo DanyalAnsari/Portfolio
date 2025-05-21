@@ -1,40 +1,93 @@
-import { assets } from "@/assets/assets";
-import Image from "next/image";
+"use client";
 import React, { useEffect, useRef, useState } from "react";
+import { assets } from "@/assets/assets";
+import ThemeTogglerButton from "./ui/ThemeTogglerButton";
+import ButtonLink from "./ui/ButtonLink";
+import AppImages from "./ui/AppImages";
+import AppIcons from "./ui/AppIcons";
+import Logo from "./ui/Logo";
+import Menu from "./ui/Menu";
 
-const Navbar = ({ isDarkMode, setIsDarkMode }) => {
-	console.log(isDarkMode);
-
-	const sideMenuRef = useRef();
+const Navbar = () => {
 	const [scroll, setScroll] = useState(false);
+	const sideMenuRef = useRef(null);
+
 	const openSideMenu = () => {
 		sideMenuRef.current.style.transform = "translateX(-16rem)";
-	};
-	const closeSideMenu = () => {
-		sideMenuRef.current.style.transform = "translateX(16rem)";
+		document.body.style.overflow = "hidden";
 	};
 
+	const closeSideMenu = () => {
+		sideMenuRef.current.style.transform = "translateX(16rem)";
+		document.body.style.overflow = "auto";
+	};
+
+	return (
+		<NavbarContainer scroll={scroll} setScroll={setScroll}>
+			<Logo className={"mr-14"} />
+			<Menu
+				className={`hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 dark:border dark:border-white/50 dark:bg-transparent ${
+					!scroll && "bg-white/50 shadow-sm "
+				}`}
+			/>
+
+			<div className="flex items-center gap-4">
+				<ThemeTogglerButton />
+				<ButtonLink path={"#contact"} className={"hidden lg:flex  ml-4"}>
+					Contact
+					<AppIcons
+						lightIcon={"arrow_icon"}
+						darkIcon={"arrow_icon_dark"}
+						size={12}
+					/>
+				</ButtonLink>
+				<button className="block md:hidden ml-3" onClick={openSideMenu}>
+					<AppIcons
+						darkIcon={"menu_white"}
+						lightIcon={"menu_black"}
+						size={24}
+					/>
+				</button>
+			</div>
+
+			{/* mobile menu */}
+			<Menu
+				ref={sideMenuRef}
+				className="flex md:hidden flex-col gap-4 p-20 px-10 fixed -right-64 top-0 w-64 h-screen bg-rose-50 transition duration-500 bottom-0 dark:bg-darkHover dark:text-white"
+				linkClickAction={closeSideMenu}
+			>
+				<div className="absolute right-6 top-6" onClick={closeSideMenu}>
+					<AppIcons
+						lightIcon={"close_black"}
+						darkIcon={"close_white"}
+						size={20}
+					/>
+				</div>
+			</Menu>
+		</NavbarContainer>
+	);
+};
+
+const NavbarContainer = ({ setScroll, scroll, children }) => {
+	const background = useRef();
 	useEffect(() => {
-		window.addEventListener(
-			"scroll",
-			() => {
-				if (scrollY > 50) {
-					setScroll(true);
-				} else {
-					setScroll(false);
-				}
-			},
-			[]
-		);
-	});
+		const handleScroll = () => {
+			setScroll(window.scrollY > 50);
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [setScroll]);
+
 	return (
 		<>
-			<div className="fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%] dark:hidden">
-				<Image
-					src={assets.header_bg_color}
-					alt="header_bg"
-					className="w-full"
-				/>
+			<div
+				ref={background}
+				className={`fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%] dark:hidden ${
+					scroll && "hidden"
+				}`}
+			>
+				<AppImages src={assets.header_bg_color} size={[1200, 200]} />
 			</div>
 			<nav
 				className={`w-full fixed px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50 ${
@@ -43,115 +96,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
 						: ""
 				}`}
 			>
-				<a href="#top">
-					<Image
-						src={isDarkMode ? assets.logo_dark : assets.logo}
-						alt="logo"
-						className="w-28 cursor-pointer mr-14"
-					/>
-				</a>
-
-				<ul
-					className={`hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 ${
-						scroll
-							? ""
-							: "bg-white/50 shadow-sm dark:border dark:border-white/50 dark:bg-transparent"
-					}`}
-				>
-					<li>
-						<a className="font-ovo" href="#top">
-							Home
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" href="#about">
-							About Me
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" href="#services">
-							Services
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" href="#works">
-							My Work
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" href="#contact">
-							Contact Me
-						</a>
-					</li>
-				</ul>
-
-				<div className="flex items-center gap-4">
-					<button onClick={() => setIsDarkMode((prev) => !prev)}>
-						<Image
-							src={isDarkMode ? assets.sun_icon : assets.moon_icon}
-							alt="theme"
-							className="w-6"
-						/>
-					</button>
-
-					<a
-						href="#contact"
-						className="hidden lg:flex items-center gap-3 px-10 py-2.5 border border-gray-500 ml-4 rounded-full font-ovo"
-					>
-						Contact
-						<Image
-							src={isDarkMode ? assets.arrow_icon_dark : assets.arrow_icon}
-							className="w-3"
-							alt="Contact"
-						/>
-					</a>
-					<button className="block md:hidden ml-3" onClick={openSideMenu}>
-						<Image
-							src={isDarkMode ? assets.menu_white : assets.menu_black}
-							alt="moon"
-							className="w-6"
-						/>
-					</button>
-				</div>
-
-				{/* mobile menu */}
-				<ul
-					ref={sideMenuRef}
-					className="flex md:hidden flex-col gap-4 p-20 px-10 fixed -right-64 top-0 w-64 h-screen bg-rose-50 transition duration-500 bottom-0 dark:bg-darkHover dark:text-white"
-				>
-					<div className="absolute right-6 top-6" onClick={closeSideMenu}>
-						<Image
-							src={isDarkMode ? assets.close_white : assets.close_black}
-							alt="close"
-							className="w-5 cursor-pointer"
-						/>
-					</div>
-					<li>
-						<a className="font-ovo" onClick={closeSideMenu} href="#top">
-							Home
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" onClick={closeSideMenu} href="#about">
-							About Me
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" onClick={closeSideMenu} href="#services">
-							Services
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" onClick={closeSideMenu} href="#work">
-							My Work
-						</a>
-					</li>
-					<li>
-						<a className="font-ovo" onClick={closeSideMenu} href="#contact">
-							Contact Me
-						</a>
-					</li>
-				</ul>
+				{children}
 			</nav>
 		</>
 	);
